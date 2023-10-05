@@ -41,8 +41,12 @@ class App:
 				return parts[1]
 		return "/"
 
-	async def run(self, host, port):
+	async def run(self, host: str = None, port: int = None):
+		if not host:
+			host = self.config['default_run']['host']
+		if not port:
+			port = self.config['default_run']['port']
 		server = await asyncio.start_server(self.handle_request, host, port)
-
+		print(f'Starting Server at {host} on {port}..')
 		async with server:
 			await server.serve_forever()

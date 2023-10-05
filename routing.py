@@ -44,7 +44,6 @@ class Router:
 		node.handler = handler
 
 	def resolve(self, path: str):
-		# TODO [Add Multithreading]
 		# TODO [Convert to Async method?]
 		# TODO [Limit Segment Cache size (somehow)] (!Important - Memory Leak)
 		# TODO [segment_cache Check static only?]

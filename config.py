@@ -13,6 +13,7 @@ class Config:
 	def init_config():
 		data = {}
 		data['default_attrs'] = {'separator': '/', 'param_indicators': ['<', '>']}
+		data['default_run'] = {'host': '127.0.0.1', 'port': 8080}
 		return data
 
 	@staticmethod
