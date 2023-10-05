@@ -24,7 +24,7 @@ class Config:
 	@staticmethod
 	def save_config(data, config_path):
 		with open(config_path, 'w') as f:
-			json.dump(data, f)
+			json.dump(data, f, indent=4, sort_keys=True)
 
 	def __getitem__(self, key):
 		if key in self.data:
