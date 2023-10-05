@@ -1,1 +1,9 @@
-{"default_attrs": {"separator": "/", "param_indicators": ["<", ">"]}}
+{
+    "default_attrs": {
+        "param_indicators": [
+            "<",
+            ">"
+        ],
+        "separator": "/"
+    }
+}

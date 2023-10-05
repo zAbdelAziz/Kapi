@@ -3,7 +3,6 @@ import warnings
 
 class Route:
 	def __init__(self):
-		# TODO [Type hints?]
 		self.static_children = {}
 		self.dynamic_child = None
 		self.variable = None
