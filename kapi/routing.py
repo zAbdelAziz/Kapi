@@ -8,6 +8,7 @@ class Route:
 		self.dynamic_child = None
 		self.variable = None
 		self.handler = None
+		self.method = None
 
 
 class Router:
@@ -21,7 +22,7 @@ class Router:
 		if routes:
 			self.construct(routes)
 
-	def add_route(self, path: str, handler):
+	def add_route(self, path: str, handler, method: str = 'get'):
 		node = self.root
 		segments = path.strip(self.default_separator).split(self.default_separator)
 
@@ -43,6 +44,7 @@ class Router:
 				node = node.static_children[segment]
 
 		node.handler = handler
+		node.method = method
 
 	async def resolve(self, path: str):
 		# TODO [Convert to Async method?]
@@ -67,11 +69,11 @@ class Router:
 				variables[node.dynamic_child.variable] = segment
 				node = node.dynamic_child
 			else:
-				result = (None, None)
+				result = (None, None, None)
 				self.segment_cache[path] = result
 				return result
 
-		result = (node.handler, variables)
+		result = (node.method, node.handler, variables)
 		self.segment_cache[path] = result
 		return result
 
@@ -81,7 +83,7 @@ class Router:
 			for route in routes:
 				self.add_route(*route)
 		elif isinstance(routes, dict):
-			for r_name, r_handler in routes.items():
+			for r_name, r_handler, in routes.items():
 				self.add_route(r_name, r_handler)
 		else:
 			raise AttributeError('routes should be a list')
