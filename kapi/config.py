@@ -3,9 +3,10 @@ import json
 
 class Config:
 	def __init__(self, config_path: str = None):
+		# TODO Add Default Path for read and save
 		if not config_path:
 			self.data = self.init_config()
-			self.save_config(self.data, 'config.json')
+			self.save_config(self.data, 'examples/config.json')
 		else:
 			self.data = self.read_config(config_path)
 
@@ -13,7 +14,7 @@ class Config:
 	def init_config():
 		data = {}
 		data['default_attrs'] = {'separator': '/', 'param_indicators': ['<', '>']}
-		data['default_run'] = {'host': '127.0.0.1', 'port': 8080}
+		data['default_run'] = {'host': '127.0.0.1', 'port': 40001}
 		return data
 
 	@staticmethod

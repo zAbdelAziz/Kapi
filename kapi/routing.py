@@ -80,5 +80,8 @@ class Router:
 		if isinstance(routes, list) or isinstance(routes, set) or isinstance(routes, tuple):
 			for route in routes:
 				self.add_route(*route)
+		elif isinstance(routes, dict):
+			for r_name, r_handler in routes.items():
+				self.add_route(r_name, r_handler)
 		else:
 			raise AttributeError('routes should be a list')
