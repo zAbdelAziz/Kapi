@@ -2,8 +2,8 @@ import asyncio
 
 from .config import Config
 from .routing import Router
-from .requests import BaseRequest, Requests
-from .responses import Response
+from .requests import Request
+from .responses import ResponseHandler
 
 
 class App:
@@ -11,8 +11,7 @@ class App:
 		self.host, self.port = host, port
 		self.config = Config(config_path)
 		self.router = Router(routes, self.config['default_attrs'])
-		self.requester = Requests()
-		self.responder = Response()
+		self.response_handler = ResponseHandler()
 
 	async def start_server(self):
 		server = await asyncio.start_server(self.handle, self.host, self.port)
@@ -26,9 +25,10 @@ class App:
 		asyncio.run(self.start_server())
 
 	async def handle(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-		request = BaseRequest()
-		x = await self.requester.read_request(request, reader)
-		data = await self.responder.prepare()
+		request = Request()
+		await request.read(reader)
+		print(request.body)
+		data = await self.response_handler.prepare()
 		writer.write(data)
 		await writer.drain()
 		writer.close()
