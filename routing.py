@@ -1,4 +1,5 @@
 import warnings
+# import asyncio
 
 
 class Route:
@@ -43,7 +44,7 @@ class Router:
 
 		node.handler = handler
 
-	def resolve(self, path: str):
+	async def resolve(self, path: str):
 		# TODO [Convert to Async method?]
 		# TODO [Limit Segment Cache size (somehow)] (!Important - Memory Leak)
 		# TODO [segment_cache Check static only?]

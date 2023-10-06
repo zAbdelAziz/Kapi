@@ -1,10 +1,13 @@
+import multiprocessing
+import asyncio
+
 from config import Config
 from routing import Router
-import asyncio
 
 
 class App:
 	def __init__(self, routes=None, config_path=None):
+		self.host, self.port = None, None
 		self.config = Config(config_path)
 		self.router = Router(routes, self.config['default_attrs'])
 
@@ -41,12 +44,14 @@ class App:
 				return parts[1]
 		return "/"
 
-	async def run(self, host: str = None, port: int = None):
-		if not host:
-			host = self.config['default_run']['host']
-		if not port:
-			port = self.config['default_run']['port']
-		server = await asyncio.start_server(self.handle_request, host, port)
-		print(f'Starting Server at {host} on {port}..')
+	async def start_server(self, host: str, port: int):
+		self.host = host if host else self.config['default_run']['host']
+		self.port = port if port else self.config['default_run']['port']
+
+		server = await asyncio.start_server(self.handle_request, self.host, self.port)
+		print(f'Starting Server at {self.host} on {self.port}..')
 		async with server:
 			await server.serve_forever()
+
+	def run(self, host: str = None, port: int = None):
+		asyncio.run(self.start_server(host, port))

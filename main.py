@@ -1,6 +1,4 @@
 from app import App
-import timeit
-import asyncio
 
 
 if __name__ == "__main__":
@@ -10,5 +8,5 @@ if __name__ == "__main__":
     host = "127.0.0.1"
     port = 8080
 
-    asyncio.run(app.run())
+    app.run()
 
