@@ -2,7 +2,9 @@ from httptools import HttpRequestParser
 
 
 class Request:
-	def __init__(self):
+	def __init__(self, reader=None):
+		self.reader = reader
+		self.parser = HttpRequestParser(self)
 		self.chunk_size = 128
 		self.url, self.body = None, None
 		self.EOF = False
@@ -17,11 +19,10 @@ class Request:
 	def on_message_complete(self):
 		self.EOF = True
 
-	async def read(self, reader):
-		_parser = HttpRequestParser(self)
+	async def read(self):
 		while True:
-			data = await reader.read(self.chunk_size)
-			_parser.feed_data(data)
+			data = await self.reader.read(self.chunk_size)
+			self.parser.feed_data(data)
 			if not data or self.EOF:
 				break
 
