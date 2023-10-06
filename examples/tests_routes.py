@@ -2,7 +2,7 @@ from .tests_api import *
 
 
 routes = {
-	"/": home,
-	"/home": home,
-	"/user/<uid>": user
+	"/": [home, 'get'],
+	"/home": [home, 'get'],
+	"/user/<uid>": [user, 'get']
 }
