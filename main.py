@@ -10,3 +10,4 @@ if __name__ == "__main__":
 
     app = App(host=host, port=port, routes=routes)
     app.run()
+
