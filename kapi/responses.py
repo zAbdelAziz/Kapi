@@ -1,12 +1,15 @@
 
 class Response:
-	def __init__(self):
-		pass
+	def __init__(self, method, handler, variables):
+		self.method = method
+		self.handler = handler
+		self.variables = variables
 
-	async def prepare(self, headers: str = None) -> bytes:
+	async def serve(self, writer):
+		print(f'handling {self.method}')
 		# TODO [Identify response type]
 		# TODO [Handle response] (e.g. add headers, serialize json)
-		return bytes(f"""HTTP/1.1 200 OK\r\nContent-type: text/html\r
+		data = bytes(f"""HTTP/1.1 200 OK\r\nContent-type: text/html\r
 				\r\n
 				<!doctype html>
 				<html>
@@ -14,3 +17,6 @@ class Response:
 				</html>
 				\r\n\r\n
 				""", "utf-8")
+		writer.write(data)
+		await writer.drain()
+		writer.close()
