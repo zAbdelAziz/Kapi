@@ -46,7 +46,8 @@ class Router:
 		node.handler = handler
 		node.method = method
 
-	async def resolve(self, path: str):
+	async def resolve(self, path: bytes):
+		path = path.decode()
 		# TODO [Convert to Async method?]
 		# TODO [Limit Segment Cache size (somehow)] (!Important - Memory Leak)
 		# TODO [segment_cache Check static only?]
