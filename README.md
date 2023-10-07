@@ -3,4 +3,4 @@
 
 #### Benchmarks
 
-* **Benchmark 0:** 3500 requests/second
+* **Benchmark 0:** 3700 reqs/second && 1.078 ms/req
