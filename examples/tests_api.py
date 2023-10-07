@@ -6,4 +6,5 @@ async def home():
 
 async def user(uid):
 	print(f'Testing User view for {uid}')
-	return "<html><body><h1>User View</h1></body></html>"
+	return {"data": uid}
+	# return f"<html><body><h1>User {uid}</h1></body></html>"

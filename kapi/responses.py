@@ -6,17 +6,20 @@ class Response:
 		self.variables = variables
 
 	async def serve(self, writer):
-		print(f'handling {self.method}')
-		# TODO [Identify response type]
-		# TODO [Handle response] (e.g. add headers, serialize json)
-		data = bytes(f"""HTTP/1.1 200 OK\r\nContent-type: text/html\r
-				\r\n
-				<!doctype html>
-				<html>
-				<p>Tester</p>
-				</html>
-				\r\n\r\n
-				""", "utf-8")
-		writer.write(data)
+		print(f'handling {self.method} {self.handler} {self.variables}')
+		# TODO [Identify response output type]
+		# 	TODO [Serialize JSON]
+		if self.variables:
+			output = await self.handler(**self.variables)
+		else:
+			output = await self.handler()
+
+		# TODO [Create Headers] (based on output?)
+		headers = 'HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n'
+
+		# TODO [Faster Serialization]?
+		if output:
+			data = bytes(f"{headers} {output} \r\n\r\n", "utf-8")
+			writer.write(data)
 		await writer.drain()
 		writer.close()
