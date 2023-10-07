@@ -48,7 +48,7 @@ class Router:
 
 	async def resolve(self, path: bytes):
 		if not path:
-			return None
+			return None, None, None
 		path = path.decode()
 		# TODO [Convert to Async method?]
 		# TODO [Limit Segment Cache size (somehow)] (!Important - Memory Leak)
@@ -73,7 +73,7 @@ class Router:
 				node = node.dynamic_child
 			else:
 				# result = ('get', handle_404, {"url": path})
-				result = None
+				result = (None, None, None)
 				self.segment_cache[path] = result
 				return result
 

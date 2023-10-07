@@ -27,15 +27,11 @@ class App:
 
 	async def handle(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
 		# TODO [Fire and forget mechanism] !!Important
-		request = Request(reader=reader)
+		request = Request(reader=reader, writer=writer)
 		await request.read()
-		route = await self.router.resolve(request.url)
-		if route is not None:
-			response = Response(*route)
-			# self.loop.create_task(response.serve(writer))
-			await response.serve(writer)
+		request.method, request.handler, request.variables = await self.router.resolve(request.url)
+		if request.handler is not None:
+			await request.serve()
 		else:
 			# TODO Handle 404
-			# print(f'404 Route Not Found at {request.url}!!')
 			writer.close()
-		# print('Done')
