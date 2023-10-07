@@ -1,10 +1,10 @@
 from httptools import HttpRequestParser
 
 
-class Request:
+class Request(HttpRequestParser):
 	def __init__(self, reader=None, writer=None):
+		super().__init__(self)
 		self.reader, self.writer = reader, writer
-		self.parser = HttpRequestParser(self)
 		self.chunk_size = 128
 		self.url, self.body = None, None
 		self.EOF = False
@@ -15,7 +15,6 @@ class Request:
 		self.done = False
 
 	def on_url(self, url: bytes):
-		# TODO [Add task to resolve the url]  ??
 		self.url = url
 
 	def on_body(self, body: bytes):
@@ -27,7 +26,7 @@ class Request:
 	async def read(self):
 		while True:
 			data = await self.reader.read(self.chunk_size)
-			self.parser.feed_data(data)
+			self.feed_data(data)
 			if not data or self.EOF:
 				break
 
