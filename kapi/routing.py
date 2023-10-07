@@ -1,5 +1,5 @@
 import warnings
-# import asyncio
+from .default_routes import handle_404
 
 
 class Route:
@@ -70,7 +70,8 @@ class Router:
 				variables[node.dynamic_child.variable] = segment
 				node = node.dynamic_child
 			else:
-				result = (None, None, None)
+				# result = ('get', handle_404, {"url": path})
+				result = None
 				self.segment_cache[path] = result
 				return result
 
@@ -79,12 +80,12 @@ class Router:
 		return result
 
 	def construct(self, routes):
-		# TODO Add Default Routes for (errors)
 		if isinstance(routes, list) or isinstance(routes, set) or isinstance(routes, tuple):
 			for route in routes:
 				self.add_route(*route)
 		elif isinstance(routes, dict):
-			for r_name, r_handler, in routes.items():
-				self.add_route(r_name, r_handler)
+			raise NotImplementedError('Routes should be either a list, set or a tuple')
+			# for r_name, r_handler, in routes.items():
+			# 	self.add_route(r_name, r_handler)
 		else:
 			raise AttributeError('routes should be a list')
