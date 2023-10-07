@@ -1,4 +1,3 @@
-
 from kapi.app import App
 
 from examples.tests_routes import routes
