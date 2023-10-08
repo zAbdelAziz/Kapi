@@ -2,8 +2,8 @@ import asyncio
 import websockets
 
 # Temporary
-import cProfile
-import pstats
+# import cProfile
+# import pstats
 
 from .config import Config
 from .routing import Router
@@ -14,10 +14,10 @@ from .requests import Request
 
 
 # Temporary
-def f8_alt(x):
-	# Increase profiler precision
-	return "%14.9f" % x
-pstats.f8 = f8_alt
+# def f8_alt(x):
+# 	# Increase profiler precision
+# 	return "%14.9f" % x
+# pstats.f8 = f8_alt
 
 
 class App:
@@ -26,7 +26,7 @@ class App:
 		self.config = Config(config_path)
 		self.router = Router(routes, self.config['default_attrs'])
 		self.loop = None
-		self.profiler = cProfile.Profile()
+		# self.profiler = cProfile.Profile()
 
 	async def start_server(self):
 		http_server = await asyncio.start_server(self.handle_http, self.host, self.port)
@@ -64,7 +64,7 @@ class App:
 		# TODO [Fire and forget mechanism] !!Important
 		request = Request(reader=reader, writer=writer)
 
-		# TODO Optimize Read [Currently Longest task]
+		# TODO Optimize Read Request [Currently Longest task]
 		await request.read()
 
 		request.method, request.handler, request.variables = await self.router.resolve(request.url)
@@ -77,6 +77,3 @@ class App:
 		else:
 			# TODO Handle 404
 			writer.close()
-
-	# self.profiler.disable()
-	# self.profiler.print_stats(sort='cumulative')
