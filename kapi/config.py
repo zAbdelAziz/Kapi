@@ -5,10 +5,10 @@ class Config:
 	def __init__(self, config_path: str = None):
 		# TODO Add Default Path for read and save
 		if not config_path:
-			self.data = self.init_config()
+			self.data: dict = self.init_config()
 			self.save_config(self.data, 'examples/config.json')
 		else:
-			self.data = self.read_config(config_path)
+			self.data: dict = self.read_config(config_path)
 
 	@staticmethod
 	def init_config():
