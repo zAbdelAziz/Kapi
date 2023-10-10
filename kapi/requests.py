@@ -5,7 +5,7 @@ class Request(HttpRequestParser):
 	def __init__(self, reader=None, writer=None):
 		super().__init__(self)
 		self.reader, self.writer = reader, writer
-		self.chunk_size = 128
+		self.chunk_size = 256
 		self.url, self.body = None, None
 		self.EOF = False
 		self.method = None
