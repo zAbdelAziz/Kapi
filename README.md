@@ -3,5 +3,6 @@
 
 #### Benchmarks
 
-* **Benchmark 0:** 3700 reqs/second && 1.078 ms/req
-* **Benchmark 1:** 3900 reqs/second && 0.260 ms/req
+* **Benchmark 0:** 3,700 reqs/second && 1.078 ms/req
+* **Benchmark 1:** 3,900 reqs/second && 0.260 ms/req
+* **Benchmark 2:** 35,370 reqs/second && 0.230 ms/req
