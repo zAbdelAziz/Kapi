@@ -10,6 +10,7 @@ from threading import Thread
 from .config import Config
 from .routing import Router
 from .requests import Request
+from .responses import BaseResponse
 
 import cProfile
 
@@ -39,9 +40,9 @@ class App:
 		await self.http_server.serve_forever()
 
 	async def start_websocket(self):
-		self.websocket_server = await websockets.serve(self.handle_websocket, self.host, self.ws_port)
+		self.ws_server = await websockets.serve(self.handle_websocket, self.host, self.ws_port)
 		print(f'Starting WebSocket Server at ws://{self.host}:{self.ws_port} ..')
-		await self.websocket_server.wait_closed()
+		await self.ws_server.wait_closed()
 
 	async def start(self):
 		self.http_loop = asyncio.new_event_loop()
@@ -106,9 +107,23 @@ class App:
 
 		if request.handler is not None:
 			# self.profiler.enable()
-			await request.serve()
+			try:
+				# TODO [Cache Output] (compress and return it to the app?) | (Store it somehow?)
+				response = await request.serve()
+			except:
+				# TODO [Handle Errors like 40x, 50x]
+				response = BaseResponse(status=500)
+				error = str(500)
+				response.output = bytes(f"'HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n' <html> Something went Wrong - {error}</html> \r\n\r\n", "utf-8")
+
+			if response:
+				writer.write(response.output)
+			await writer.drain()
+			writer.close()
 			# self.profiler.disable()
 			# self.profiler.print_stats(sort='cumulative')
 		else:
-			# TODO Handle 404
+			# TODO [Handle 30x, 404	]
 			writer.close()
+
+		# TODO [Handle Websocket Upgrade]

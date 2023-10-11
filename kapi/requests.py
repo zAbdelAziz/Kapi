@@ -2,6 +2,7 @@ from httptools import HttpRequestParser
 
 
 class Request(HttpRequestParser):
+	# TODO [Rewrite Streamer & HttpRequestParser -> to optimize the read]
 	__slots__ = (
 		'reader', 'writer', 'loop', 'chunk_size',
 		'message',
@@ -20,9 +21,8 @@ class Request(HttpRequestParser):
 		self.body: bytes = None
 		self.EOF: bool = False
 		self.method: bytes = None
-		self.handler, self.variables = None, None
+		self.handler = None						# -> Response
 		self.variables: dict = None
-		self.done: bool = False
 
 	def on_url(self, url: bytes):
 		self.url = url
@@ -48,22 +48,9 @@ class Request(HttpRequestParser):
 	async def serve(self):
 		# print(f'handling {self.method} {self.handler} {self.variables}')
 		if self.variables:
-			output = await self.handler(**self.variables)
+			response = await self.handler(**self.variables)
 		else:
-			output = await self.handler()
-		# TODO [Identify response output type] (JSON? HTML? Image? Audio? Websocket?! ..?!!)
-		# 	TODO [Serialize JSON]
-		# 	TODO [Handle Websocket]
-		# 	TODO [Cache Static Output] (compress and return it to the app?) | (Store it somehow?)
+			response = await self.handler()
 
-		# TODO [Create Headers] (based on output?)
-		headers = 'HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n'
-
-		if output:
-			# TODO [Faster Serialization]?
-			data = bytes(f"{headers} <html>{output}</html> \r\n\r\n", "utf-8")
-			self.writer.write(data)
-		await self.writer.drain()
-		self.writer.close()
-		self.done = True
+		return response
 
