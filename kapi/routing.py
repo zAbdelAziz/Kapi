@@ -1,5 +1,5 @@
 import warnings
-from .default_routes import handle_404
+from .default_routes import *
 
 
 class Route:
@@ -14,6 +14,7 @@ class Route:
 class Router:
 	def __init__(self, routes: list = None, default_attrs: dict = None):
 		self.root = Route()
+
 		# TODO [Decide on a more robust datastructure for segment_cache]
 		#  (capture the order to keep the most recent on top) (FILO) (Array? Stack?)
 		self.segment_cache = {}
@@ -85,6 +86,10 @@ class Router:
 		if isinstance(routes, list) or isinstance(routes, set) or isinstance(routes, tuple):
 			for route in routes:
 				self.add_route(*route)
+			# TODO [Add Default Routes]
+			# TODO [Optimize Static / favicon]
+			self.add_route('/static/<url>', route_static, 'get')
+			self.add_route('favicon.ico', route_favicon, 'get')
 		elif isinstance(routes, dict):
 			raise NotImplementedError('Routes should be either a list, set or a tuple')
 			# for r_name, r_handler, in routes.items():
