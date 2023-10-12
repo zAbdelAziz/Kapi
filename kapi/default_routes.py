@@ -1,10 +1,11 @@
 import os
 from . import __BASEDIR__
-from .responses import Static
+from .responses import Static, Response
 
 
-async def handle_404(url):
-	return f"<html><body><p>404 - {url} Not found</p></body></html>"
+async def route_404(url):
+	body = f"<html><body><p>404 - {url} Not found</p></body></html>"
+	return Response(body)
 
 
 async def route_static(url):

@@ -9,6 +9,8 @@ from threading import Thread
 
 from .config import Config
 from .routing import Router
+from .default_routes import route_404
+
 from .requests import Request
 from .responses import BaseResponse
 
@@ -89,8 +91,8 @@ class App:
 		self.host = host if host else self.config['default_run']['host']
 		self.port = port if port else self.config['default_run']['port']
 		self.loop = asyncio.get_event_loop()
-		# asyncio.run(self.start_server())
-		asyncio.run(self.start())
+		asyncio.run(self.start_server())
+		# asyncio.run(self.start())
 
 	async def handle_websocket(self, websocket, path):
 		# TODO [Create a separate router] (Or perhaps add some variable to the existing)
@@ -100,15 +102,15 @@ class App:
 
 	async def handle_http(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
 		# TODO [Fire and forget mechanism] !!Important
-		request: Request = Request(reader=reader, writer=writer, loop=self.http_loop)
+		request: Request = Request(reader=reader, writer=writer, loop=self.loop)
 
 		# TODO Optimize Read Request [Currently Longest task]
 		await request.read()
 
 		request.method, request.handler, request.variables = await self.router.resolve(request.url)
 
+		# self.profiler.enable()
 		if request.handler is not None:
-			# self.profiler.enable()
 			try:
 				# TODO [Cache Output] (compress and return it to the app?) | (Store it somehow?)
 				response = await request.serve()
@@ -117,18 +119,22 @@ class App:
 				response = BaseResponse(status=500)
 				error = str(500)
 				response.output = bytes(f"'HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n' <html> Something went Wrong - {error}</html> \r\n\r\n", "utf-8")
-
-			if response:
-				# TODO [Ensure Response is a BaseRequest Child]
-				writer.write(response.output)
-
-			# TODO [Upgrade connection?]
-			await writer.drain()
-			writer.close()
-			# self.profiler.disable()
-			# self.profiler.print_stats(sort='cumulative')
 		else:
-			# TODO [Handle 30x, 404	]
-			writer.close()
+			# TODO [Handle 404]
+			path = f"/404{request.url.decode()}"
+			print(bytes(path, 'utf-8'))
+			request.method, request.handler, request.variables = await self.router.resolve(bytes(path, 'utf-8'))
+			response = await request.serve()
+
+		if response:
+			# TODO [Ensure Response is a BaseRequest Child]
+			writer.write(response.output)
+
+		# TODO [Upgrade connection?]
+		await writer.drain()
+		writer.close()
+		# self.profiler.disable()
+		# self.profiler.print_stats(sort='cumulative')
+		writer.close()
 
 		# TODO [Handle Websocket Upgrade]

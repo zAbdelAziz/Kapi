@@ -87,7 +87,9 @@ class Router:
 			for route in routes:
 				self.add_route(*route)
 			# TODO [Add Default Routes]
-			# TODO [Optimize Static / favicon]
+			if b'/404/<url>' not in routes or b'/404' not in routes:
+				self.add_route('/404/<url>', route_404, 'get')
+				# TODO [Optimize Static / favicon]
 			self.add_route('/static/<url>', route_static, 'get')
 			self.add_route('favicon.ico', route_favicon, 'get')
 		elif isinstance(routes, dict):
