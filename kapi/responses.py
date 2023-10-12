@@ -5,18 +5,20 @@ import json
 
 class BaseResponse:
 	__slots__ = (
-		'protocol', 'status', 'content_type',
+		'protocol', 'status', 'content_type', 'cache',
 		'headers', 'body', 'output'
 	)
 
 	def __init__(self, body: bytes = None, protocol: bytes = HTTP1_1,
 				status: int = 200,
 				content_type: bytes = HTML_TYPE,
+				cache: bool = False
 				):
 		# TODO [Convert to Stream] !!important
 		self.protocol: bytes = protocol
 		self.status: int = status
 		self.content_type: bytes = content_type
+		self.cache = CACHE_ALL if cache else CACHE_NONE
 
 		# TODO [Optimize]
 		self.body: bytes = body
@@ -32,19 +34,20 @@ class BaseResponse:
 	def build_headers(self, status):
 		# TODO [Optimize]
 		return b"".join([self.protocol, SPC, status, SEP,
-						 CONTENT_TYPE, COL, SPC, self.content_type,
+						 CONTENT_TYPE, COL, SPC, self.content_type, SEP,
+						 self.cache,
 						 SEP, SEP])
 
 
 class Response(BaseResponse):
-	def __init__(self, data: str = None):
+	def __init__(self, data: str = None, cache: bool = False):
 		# TODO [Compress]
 		body: bytes = bytes(data, "utf-8")
-		super().__init__(body=body, content_type=HTML_TYPE)
+		super().__init__(body=body, content_type=HTML_TYPE, cache=cache)
 
 
 class JSON(BaseResponse):
-	def __init__(self, data: dict = None):
+	def __init__(self, data: dict = None, cache: bool = True):
 		# TODO [Serialize JSON USING MSGSPEC]
 		body: bytes = json.dumps(data).encode('utf-8') if data else None
-		super().__init__(body=body, content_type=JSON_TYPE)
+		super().__init__(body=body, content_type=JSON_TYPE, cache=cache)

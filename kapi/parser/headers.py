@@ -47,3 +47,6 @@ CONTENT_TRANSFER_ENCODING: bytes = b"Content-Transfer-Encoding"
 
 HTML_TYPE: bytes = b"text/html"
 JSON_TYPE: bytes = b"application/json"
+
+CACHE_ALL: bytes = b"Cache-Control: max-age=31536000, immutable"
+CACHE_NONE: bytes = b"Cache-Control: no-cache"

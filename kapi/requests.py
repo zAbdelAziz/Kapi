@@ -52,6 +52,5 @@ class Request(HttpRequestParser):
 		else:
 			response = await self.handler()
 
-		print(response.output)
 		return response
 
