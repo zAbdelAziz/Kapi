@@ -5,46 +5,46 @@ import json
 
 class BaseResponse:
 	__slots__ = (
+		'protocol', 'status', 'content_type',
 		'headers', 'body', 'output'
 	)
 
-	def __init__(self, status: int = 200):
-		# TODO [Get http version]
-		# TODO [Get status]
-		self.headers: bytearray = bytearray()
-		self.body: bytes | None
-		self.output: bytes | None
+	def __init__(self, body: bytes = None, protocol: bytes = HTTP1_1,
+				status: int = 200,
+				content_type: bytes = HTML_TYPE,
+				):
+		# TODO [Convert to Stream] !!important
+		self.protocol: bytes = protocol
+		self.status: int = status
+		self.content_type: bytes = content_type
+
+		# TODO [Optimize]
+		self.body: bytes = body
+		if self.body and status == 200:
+			self.headers: bytes = self.build_headers(STATUS_200)
+			self.output = b"".join([self.headers, self.body, SEP, SEP])
+		elif not self.body:
+			# TODO [Cache]
+			self.status = 204
+			self.headers: bytes = self.build_headers(STATUS_204)
+			self.output = b"".join([self.headers, SEP])
+
+	def build_headers(self, status):
+		# TODO [Optimize]
+		return b"".join([self.protocol, SPC, status, SEP,
+						 CONTENT_TYPE, COL, SPC, self.content_type,
+						 SEP, SEP])
 
 
 class Response(BaseResponse):
-	def __init__(self, data: str):
-		super().__init__()
-		# TODO [Serialize JSON USING MSGSPEC]
-		self.data: bytes = bytes(data, "utf-8")
-		self.headers = self.build_headers()
-		self.output = b"".join([self.headers, self.data, SEP, SEP])
-
-	@staticmethod
-	def build_headers():
-		# TODO [Optimize]
-		http = b"".join([HTTP1_1, SPC])
-		status = b"".join([STATUS_200, SEP])
-		content_type = b"".join([CONTENT_TYPE, COL, SPC, HTML_TYPE, SEP])
-		return b"".join([http, status, content_type, SEP])
+	def __init__(self, data: str = None):
+		# TODO [Compress]
+		body: bytes = bytes(data, "utf-8")
+		super().__init__(body=body, content_type=HTML_TYPE)
 
 
 class JSON(BaseResponse):
-	def __init__(self, data: dict):
-		super().__init__()
+	def __init__(self, data: dict = None):
 		# TODO [Serialize JSON USING MSGSPEC]
-		self.data: bytes = json.dumps(data).encode('utf-8')
-		self.headers = self.build_headers()
-		self.output = b"".join([self.headers, self.data, SEP, SEP])
-
-	@staticmethod
-	def build_headers():
-		# TODO [Optimize]
-		http = b"".join([HTTP1_1, SPC])
-		status = b"".join([STATUS_200, SEP])
-		content_type = b"".join([CONTENT_TYPE, COL, SPC, JSON_TYPE, SEP])
-		return b"".join([http, status, content_type, SEP])
+		body: bytes = json.dumps(data).encode('utf-8') if data else None
+		super().__init__(body=body, content_type=JSON_TYPE)

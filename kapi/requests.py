@@ -21,7 +21,7 @@ class Request(HttpRequestParser):
 		self.body: bytes = None
 		self.EOF: bool = False
 		self.method: bytes = None
-		self.handler = None						# -> Response
+		self.handler = None
 		self.variables: dict = None
 
 	def on_url(self, url: bytes):
@@ -52,5 +52,6 @@ class Request(HttpRequestParser):
 		else:
 			response = await self.handler()
 
+		print(response.output)
 		return response
 
