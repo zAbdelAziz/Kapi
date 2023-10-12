@@ -1,6 +1,7 @@
-from .parser.headers import *
+import os
 
-import json
+from . import json_encoder, __BASEDIR__
+from .parser.headers import *
 
 
 class BaseResponse:
@@ -18,7 +19,7 @@ class BaseResponse:
 		self.protocol: bytes = protocol
 		self.status: int = status
 		self.content_type: bytes = content_type
-		self.cache = CACHE_ALL if cache else CACHE_NONE
+		self.cache: bytes = CACHE_ALL if cache else CACHE_NONE
 
 		# TODO [Optimize]
 		self.body: bytes = body
@@ -48,6 +49,15 @@ class Response(BaseResponse):
 
 class JSON(BaseResponse):
 	def __init__(self, data: dict = None, cache: bool = True):
-		# TODO [Serialize JSON USING MSGSPEC]
-		body: bytes = json.dumps(data).encode('utf-8') if data else None
+		body: bytes = json_encoder.encode(data) if data else None
+		# body: bytes = json.dumps(data).encode('utf-8') if data else None
 		super().__init__(body=body, content_type=JSON_TYPE, cache=cache)
+
+
+class Static(BaseResponse):
+	def __init__(self, path: str = None, cache: bool = True):
+		content_type = MIME_TYPES.get(path.split('.')[-1])
+		# TODO [Optimize] (Stream response)
+		with open(path, 'rb') as f:
+			body = f.read()
+		super().__init__(body=body, content_type=content_type, cache=cache)
