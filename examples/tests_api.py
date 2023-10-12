@@ -9,5 +9,5 @@ async def user(uid):
 	return JSON({'data': uid})
 
 
-async def no_content(uid):
+async def no_content():
 	return JSON()

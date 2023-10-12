@@ -9,7 +9,6 @@ from threading import Thread
 
 from .config import Config
 from .routing import Router
-from .default_routes import route_404
 
 from .requests import Request
 from .responses import BaseResponse
@@ -51,10 +50,7 @@ class App:
 		self.ws_loop = asyncio.new_event_loop()
 
 		self.http_thread = Thread(target=self.http_loop.run_until_complete, args=(self.start_http(),))
-		# self.http_thread.daemon = True
-
 		self.ws_thread = Thread(target=self.ws_loop.run_until_complete, args=(self.start_websocket(),))
-		# self.ws_thread.daemon = True
 
 		try:
 			self.http_thread.start()
@@ -91,8 +87,8 @@ class App:
 		self.host = host if host else self.config['default_run']['host']
 		self.port = port if port else self.config['default_run']['port']
 		self.loop = asyncio.get_event_loop()
-		asyncio.run(self.start_server())
-		# asyncio.run(self.start())
+		# asyncio.run(self.start_server())
+		asyncio.run(self.start())
 
 	async def handle_websocket(self, websocket, path):
 		# TODO [Create a separate router] (Or perhaps add some variable to the existing)
@@ -101,8 +97,7 @@ class App:
 			await websocket.send(message)
 
 	async def handle_http(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-		# TODO [Fire and forget mechanism] !!Important
-		request: Request = Request(reader=reader, writer=writer, loop=self.loop)
+		request: Request = Request(reader=reader, writer=writer, loop=self.http_loop)
 
 		# TODO Optimize Read Request [Currently Longest task]
 		await request.read()
@@ -120,10 +115,9 @@ class App:
 				error = str(500)
 				response.output = bytes(f"'HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n' <html> Something went Wrong - {error}</html> \r\n\r\n", "utf-8")
 		else:
-			# TODO [Handle 404]
-			path = f"/404{request.url.decode()}"
-			print(bytes(path, 'utf-8'))
-			request.method, request.handler, request.variables = await self.router.resolve(bytes(path, 'utf-8'))
+			# TODO [Handle 404] (Throw an error instead of a normal route?) !!Important
+			path = bytearray(b'/404' + request.url)
+			request.method, request.handler, request.variables = await self.router.resolve(path)
 			response = await request.serve()
 
 		if response:
@@ -131,10 +125,10 @@ class App:
 			writer.write(response.output)
 
 		# TODO [Upgrade connection?]
+		# TODO [Handle Websocket Upgrade]
+
 		await writer.drain()
-		writer.close()
 		# self.profiler.disable()
 		# self.profiler.print_stats(sort='cumulative')
 		writer.close()
 
-		# TODO [Handle Websocket Upgrade]

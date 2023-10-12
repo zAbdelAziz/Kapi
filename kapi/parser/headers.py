@@ -5,35 +5,37 @@ SPC: bytes = b" "
 HTTP1_0: bytes = b"HTTP/1.0"
 HTTP1_1: bytes = b"HTTP/1.1"
 
-STATUS_100: bytes = b"100 Continue"
-STATUS_101: bytes = b"101 Switching Protocols"
-STATUS_200: bytes = b"200 OK"
-STATUS_204: bytes = b"204 No Content"
-STATUS_206: bytes = b"206 Partial Content"
-STATUS_301: bytes = b"301 Moved Permanently"
-STATUS_308: bytes = b"308 Permanent Redirect"
-STATUS_400: bytes = b"400 Bad Request"
-STATUS_401: bytes = b"401 Unauthorized"
-STATUS_403: bytes = b"403 Forbidden"
-STATUS_404: bytes = b"404 Not Found"
-STATUS_405: bytes = b"405 Method Not Allowed"
-STATUS_408: bytes = b"408 Request Timeout"
-STATUS_410: bytes = b"410 Gone"
-STATUS_413: bytes = b"413 Content Too Large"
-STATUS_414: bytes = b"414 URI Too Long"
-STATUS_415: bytes = b"415 Unsupported Media Type"
-STATUS_426: bytes = b"426 Upgrade Required"
-STATUS_429: bytes = b"429 Too Many Requests"
-STATUS_431: bytes = b"431 Request Header Fields Too Large"
-STATUS_451: bytes = b"451 Unavailable For Legal Reasons"
-STATUS_500: bytes = b"500 Internal Server Error"
-STATUS_501: bytes = b"501 Not Implemented"
-STATUS_502: bytes = b"502 Bad Gateway"
-STATUS_503: bytes = b"503 Service Unavailable"
-STATUS_504: bytes = b"504 Gateway Timeout"
-STATUS_505: bytes = b"505 HTTP Version Not Supported"
-STATUS_508: bytes = b"508 Loop Detected"
-STATUS_511: bytes = b"511 Network Authentication Required"
+STATUS = {
+	100: b"100 Continue",
+	101: b"101 Switching Protocols",
+	200: b"200 OK",
+	204: b"204 No Content",
+	206: b"206 Partial Content",
+	301: b"301 Moved Permanently",
+	308: b"308 Permanent Redirect",
+	400: b"400 Bad Request",
+	401: b"401 Unauthorized",
+	403: b"403 Forbidden",
+	404: b"404 Not Found",
+	405: b"405 Method Not Allowed",
+	408: b"408 Request Timeout",
+	410: b"410 Gone",
+	413: b"413 Content Too Large",
+	414: b"414 URI Too Long",
+	415: b"415 Unsupported Media Type",
+	426: b"426 Upgrade Required",
+	429: b"429 Too Many Requests",
+	431: b"431 Request Header Fields Too Large",
+	451: b"451 Unavailable For Legal Reasons",
+	500: b"500 Internal Server Error",
+	501: b"501 Not Implemented",
+	502: b"502 Bad Gateway",
+	503: b"503 Service Unavailable",
+	504: b"504 Gateway Timeout",
+	505: b"505 HTTP Version Not Supported",
+	508: b"508 Loop Detected",
+	511: b"511 Network Authentication Required"
+}
 
 CONTENT_TYPE: bytes = b"Content-Type"
 CONTENT_DISPOSITION: bytes = b"Content-Disposition"
@@ -66,3 +68,5 @@ MIME_TYPES = {
 	"tiff": b"image/tif",
 	"webp": b"image/webp",
 }
+
+
