@@ -50,3 +50,19 @@ JSON_TYPE: bytes = b"application/json"
 
 CACHE_ALL: bytes = b"Cache-Control: max-age=31536000, immutable"
 CACHE_NONE: bytes = b"Cache-Control: no-cache"
+
+
+MIME_TYPES = {
+	"js": b"text/javascript",
+	"css": b"text/css",
+	"ico": b"image/vnd.microsoft.icon",
+	"bmp": b"image/bmp",
+	"gif": b"image/gif",
+	"jpg": b"image/jpeg",
+	"jpeg": b"image/jpeg",
+	"png": b"image/png",
+	"svg": b"image/svg+xml",
+	"tif": b"image/tif",
+	"tiff": b"image/tif",
+	"webp": b"image/webp",
+}
