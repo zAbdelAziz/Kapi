@@ -57,6 +57,8 @@ class App:
 		try:
 			self.http_thread.start()
 			self.ws_thread.start()
+			self.http_thread.join()
+			self.ws_thread.join()
 		except KeyboardInterrupt:
 			self.http_server.close()
 			self.ws_server.close()
@@ -87,8 +89,8 @@ class App:
 		self.host = host if host else self.config['default_run']['host']
 		self.port = port if port else self.config['default_run']['port']
 		self.loop = asyncio.get_event_loop()
-		asyncio.run(self.start_server())
-		# asyncio.run(self.start())
+		# asyncio.run(self.start_server())
+		asyncio.run(self.start())
 
 	async def handle_websocket(self, websocket, path):
 		# TODO [Create a separate router] (Or perhaps add some variable to the existing)
@@ -98,7 +100,7 @@ class App:
 
 	async def handle_http(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
 		# TODO [Fire and forget mechanism] !!Important
-		request: Request = Request(reader=reader, writer=writer, loop=self.loop)
+		request: Request = Request(reader=reader, writer=writer, loop=self.http_loop)
 
 		# TODO Optimize Read Request [Currently Longest task]
 		await request.read()
