@@ -2,7 +2,7 @@ from kapi.responses import *
 
 
 async def home():
-	return Response("<html><body><h1>Home View</h1></body></html>")
+	return Response("I am kapi", cache=True)
 
 
 async def user(uid):

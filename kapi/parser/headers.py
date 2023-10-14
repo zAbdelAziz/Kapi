@@ -37,9 +37,7 @@ STATUS = {
 	511: b"511 Network Authentication Required"
 }
 
-CONTENT_TYPE: bytes = b"Content-Type"
 CONTENT_DISPOSITION: bytes = b"Content-Disposition"
-CONTENT_ENCODING: bytes = b"Content-Encoding"
 CONTENT_LANGUAGE: bytes = b"Content-Language"
 CONTENT_LENGTH: bytes = b"Content-Length"
 CONTENT_LOCATION: bytes = b"Content-Location"
@@ -47,14 +45,14 @@ CONTENT_MD5: bytes = b"Content-MD5"
 CONTENT_RANGE: bytes = b"Content-Range"
 CONTENT_TRANSFER_ENCODING: bytes = b"Content-Transfer-Encoding"
 
-HTML_TYPE: bytes = b"text/html"
-JSON_TYPE: bytes = b"application/json"
-
 CACHE_ALL: bytes = b"Cache-Control: max-age=31536000, immutable"
 CACHE_NONE: bytes = b"Cache-Control: no-cache"
 
-
+CONTENT_TYPE: bytes = b"Content-Type"
 MIME_TYPES = {
+	"html": b"text/html",
+	"text": b"text/plain",
+	"json": b"application/json",
 	"js": b"text/javascript",
 	"css": b"text/css",
 	"ico": b"image/vnd.microsoft.icon",
@@ -68,5 +66,3 @@ MIME_TYPES = {
 	"tiff": b"image/tif",
 	"webp": b"image/webp",
 }
-
-

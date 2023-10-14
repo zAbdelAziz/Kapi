@@ -1,5 +1,3 @@
-import os
-
 from . import json_encoder, __BASEDIR__
 from .parser.headers import *
 
@@ -12,13 +10,13 @@ class BaseResponse:
 
 	def __init__(self, body: bytes = None, protocol: bytes = HTTP1_1,
 				status: int = 200,
-				content_type: bytes = HTML_TYPE,
+				content_type: str = 'text',
 				cache: bool = False
 				):
 		# TODO [Convert to Stream] !!important
 		self.protocol: bytes = protocol
 		self.status: int = status
-		self.content_type: bytes = content_type
+		self.content_type: bytes = MIME_TYPES.get(content_type)
 		# TODO [Use Assets and Body Cache] [Allow to edit max-age] ??
 		self.cache: bytes = CACHE_ALL if cache else CACHE_NONE
 
@@ -41,23 +39,23 @@ class BaseResponse:
 
 
 class Response(BaseResponse):
+	# @lru_cache(maxsize=None)
 	def __init__(self, data: str = None, cache: bool = False):
 		# TODO [Compress]
 		body: bytes = bytes(data, "utf-8")
-		super().__init__(body=body, content_type=HTML_TYPE, cache=cache)
+		super().__init__(body=body, content_type='html', cache=cache)
 
 
 class JSON(BaseResponse):
 	def __init__(self, data: dict = None, cache: bool = True):
 		body: bytes = json_encoder.encode(data) if data else None
 		# body: bytes = json.dumps(data).encode('utf-8') if data else None
-		super().__init__(body=body, content_type=JSON_TYPE, cache=cache)
+		super().__init__(body=body, content_type='json', cache=cache)
 
 
 class Static(BaseResponse):
 	def __init__(self, path: str = None, cache: bool = True):
-		content_type = MIME_TYPES.get(path.split('.')[-1])
 		# TODO [Optimize] (Stream response) !!Important
 		with open(path, 'rb') as f:
 			body = f.read()
-		super().__init__(body=body, content_type=content_type, cache=cache)
+		super().__init__(body=body, content_type=path.split('.')[-1], cache=cache)
