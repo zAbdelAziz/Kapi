@@ -66,3 +66,4 @@ MIME_TYPES = {
 	"tiff": b"image/tif",
 	"webp": b"image/webp",
 }
+MIME_IMG = {'ico', 'bmp', 'gif', 'jpg', 'jpeg', 'png', 'svg', 'tif', 'tiff', 'webp'}

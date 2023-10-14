@@ -11,7 +11,7 @@ from .config import Config
 from .routing import Router
 
 from .requests import Request
-from .responses import BaseResponse
+from .responses import WebResponse
 
 import cProfile
 
@@ -111,7 +111,7 @@ class App:
 				response = await request.serve()
 			except:
 				# TODO [Handle Errors like 40x, 50x]
-				response = BaseResponse(status=500)
+				response = WebResponse(status=500)
 				error = str(500)
 				response.output = bytes(f"'HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n' <html> Something went Wrong - {error}</html> \r\n\r\n", "utf-8")
 		else:

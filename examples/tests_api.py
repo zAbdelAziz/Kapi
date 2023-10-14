@@ -2,12 +2,12 @@ from kapi.responses import *
 
 
 async def home():
-	return Response("I am kapi", cache=True)
+	return WebResponse("I am kapi", cache=True)
 
 
 async def user(uid):
-	return JSON({'data': uid})
+	return WebResponse({'data': uid}, content_type='json')
 
 
 async def no_content():
-	return JSON()
+	return WebResponse()
