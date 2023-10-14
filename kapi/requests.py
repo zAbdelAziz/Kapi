@@ -4,8 +4,8 @@ from httptools import HttpRequestParser
 class Request(HttpRequestParser):
 	# TODO [Rewrite Streamer & HttpRequestParser -> to optimize the read]
 	__slots__ = (
-		'reader', 'writer', 'loop', 'chunk_size',
-		'message',
+		'reader', 'writer', 'loop',
+		'chunk_size', 'message',
 		'method', 'url', 'body', 'EOF',
 		'handler', 'variables',
 		'done'
@@ -17,15 +17,16 @@ class Request(HttpRequestParser):
 		self.loop = loop
 		self.chunk_size: int = 256
 		self.message: bytearray = bytearray()
-		self.url: bytes = None
-		self.body: bytes = None
+		self.url: bytes | None
+		self.body: bytes | None
 		self.EOF: bool = False
-		self.method: bytes = None
+		self.method: bytes | None
 		self.handler = None
-		self.variables: dict = None
+		self.variables: dict | None
 
 	def on_url(self, url: bytes):
 		self.url = url
+		# self.method, self.handler, self.variables = await self.router.resolve(url)
 
 	def on_body(self, body: bytes):
 		self.body = body
