@@ -1,4 +1,5 @@
 from httptools import HttpRequestParser
+from .parser.headers import *
 
 
 class Request(HttpRequestParser):
@@ -47,11 +48,12 @@ class Request(HttpRequestParser):
 				break
 
 	async def serve(self):
-		# print(f'handling {self.method} {self.handler} {self.variables}')
 		if self.variables:
 			response = await self.handler(**self.variables)
 		else:
 			response = await self.handler()
-
-		return response
-
+		# TODO [Handle All Status]
+		if not response._data:
+			response.status = 204
+		response.write(self.writer, response.build_headers())
+		await response.stream_data(self)
