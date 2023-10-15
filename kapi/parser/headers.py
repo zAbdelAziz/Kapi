@@ -67,3 +67,4 @@ MIME_TYPES = {
 	"webp": b"image/webp",
 }
 MIME_IMG = {'ico', 'bmp', 'gif', 'jpg', 'jpeg', 'png', 'svg', 'tif', 'tiff', 'webp'}
+MIME_TXT = {'html', 'text', 'js', 'css'}
