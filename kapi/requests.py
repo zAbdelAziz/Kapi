@@ -1,5 +1,8 @@
+import traceback
+
 from httptools import HttpRequestParser
-from .parser.headers import *
+
+from .default_routes import route_500
 
 
 class Request(HttpRequestParser):
@@ -48,10 +51,14 @@ class Request(HttpRequestParser):
 				break
 
 	async def serve(self):
-		if self.variables:
-			response = await self.handler(**self.variables)
-		else:
-			response = await self.handler()
+		try:
+			if self.variables:
+				response = await self.handler(**self.variables)
+			else:
+				response = await self.handler()
+		except:
+			tb = traceback.format_exc()
+			response = await route_500(tb)
 		# TODO [Handle All Status]
 		if not response._data:
 			response.status = 204
