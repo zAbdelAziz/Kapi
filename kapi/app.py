@@ -11,7 +11,6 @@ from .config import Config
 from .routing import Router
 
 from .requests import Request
-from .responses import WebResponse
 
 import cProfile
 
@@ -102,17 +101,13 @@ class App:
 		# TODO Optimize Read Request [Currently Longest task]
 		await request.read()
 
-		try:
-			request.method, request.handler, request.variables = await self.router.resolve(request.url)
-			if request.handler is not None:
-				await request.serve()
-			else:
-				raise NotImplementedError('The Route was not found')
-		except NotImplementedError:
-			request.method, request.handler, request.variables = await self.router.resolve(b'/404' + request.url)
+		request.method, request.handler, request.variables = await self.router.resolve(request.url)
+		if request.handler is not None:
 			await request.serve()
-		except:
-			request.method, request.handler, request.variables = await self.router.resolve(b'/500' + request.url)
+		else:
+			if not request.url:
+				request.url = b""
+			request.method, request.handler, request.variables = await self.router.resolve(b'/404' + request.url)
 			await request.serve()
 
 		writer.close()
