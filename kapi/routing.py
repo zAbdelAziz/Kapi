@@ -73,8 +73,8 @@ class Router:
 				variables[node.dynamic_child.variable] = segment
 				node = node.dynamic_child
 			else:
-				# result = (None, None, None)
-				result = ('get', route_404, {"url": path})
+				result = (None, None, None)
+				# result = ('get', route_404, {"url": path})
 				self.segment_cache[path] = result
 				return result
 
